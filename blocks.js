@@ -1206,8 +1206,8 @@ provide( bemDom.declBlock( this.name,
 
 				name : null,// Уникальное имя блока.
 				type_insert : 'simple',// Тип вставки: "simple", "paginator".
-				mode_sending_request_ajax : 'wait',// Отправка ajax-запроса.
-				mode_getting_response_ajax : 'insert',// Вставка полученных данных от ajax-запроса.
+				mode_sending_request_ajax : 'wait',// Режим для отправки ajax-запроса.
+				mode_getting_response_ajax : 'insert',// Режим для вставки полученных данных от ajax-запроса.
 				url : null,
 				display_modes : {// Режимы отображения внутреннего содержимого (элементов) блока paste-1.
 
@@ -1269,6 +1269,11 @@ provide( bemDom.declBlock( this.name,
 		 * Будет содержать массив объектов элементов блока.
 		 */
 		_elem_div: [],
+		
+		/**
+		 * Имя переменной скрытого поля. При указание параметра "name" присваивает его значение.
+		 */
+		_page: "page",
 
 	    /**
 	     * Триггеры до установки модификаторов.
@@ -1283,8 +1288,8 @@ provide( bemDom.declBlock( this.name,
 			'js': {
 
 				// Конструктор экземпляра.
-				'inited': function() {
-					
+				'inited': function(modName, modVal, prevModVal) {
+
 					// Основные объекты.
 					this._mainObject();
 
@@ -1321,9 +1326,15 @@ provide( bemDom.declBlock( this.name,
 					
 					// Если установлен режим пагинации.
 					if ( this.params.type_insert == 'paginator' ) {
+						
+						// Если задан параметр "name":
+						if ( this.params.name ) {
+							
+							this._page = this.params.name;
+						}
 
 						// Необходимо проверить, есть ли внутри элемента "paste-1__replace" скрытое поле.
-						if ( this._elem_div__replace.domElem.find('input[name="page"]').length ) {
+						if ( this._elem_div__replace.domElem.find('input[name="' + this._page + '"]').length ) {
 							
 							this._elem_div__other.delMod( 'hide' );
 						}
@@ -1378,7 +1389,7 @@ provide( bemDom.declBlock( this.name,
 			// Для режима пагинации необходимо определить адрес AJAX-запроса.
 			if ( this.params.type_insert == 'paginator' && this._elem_div__replace ) {
 				
-				this.params.url = this._elem_div__replace.domElem.find('input[name="page"]').val();
+				this.params.url = this._elem_div__replace.domElem.find('input[name="' + this._page + '"]').val();
 			}
 
 			let mythis = this;

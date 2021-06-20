@@ -273,8 +273,23 @@ __change - элемент события change.
 	<?=$this->cell('Test')->render('replace')?>
 	```
 
+### Микс из блоков "paste-1", "paste-2" и т.д.
 
+При использовании микса блоков "paste" необходимо указывать параметр "name".
 
+```html
+<div data-bem=' { "paste-1":{"name":"Уникальное_имя_блока"}, "paste-2":{"name":"Уникальное_имя_блока"} } '>...</div>
+```
+
+Использование параметра "name" позволяет миксовать элемент блока "paste" такой как "__replace".
+
+```html
+<div class="...paste-1__replace paste-2__replace i-bem">
+	...
+	<input name="Уникальное_имя_блока" value="...">
+	<input name="Уникальное_имя_блока" value="...">
+</div>
+```
 
 
 
