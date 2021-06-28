@@ -1339,7 +1339,7 @@ provide( bemDom.declBlock( this.name,
 							this._elem_div__other.delMod( 'hide' );
 						}
 					}
-					
+
 					// Если задано имя блока, создаём именной канал для запуска событий.
 					if ( this.params.name ) {
 
@@ -1414,11 +1414,8 @@ provide( bemDom.declBlock( this.name,
 					},
 					success: function( html, textStatus, request ) {
 
-						if ( mythis._elem_div__replace ) {
-
-							bemDom.replace( mythis._elem_div__replace.domElem, html );
-							mythis._mainObject();
-						}
+						mythis._insert( html );
+						mythis._mainObject();
 						
 						// Для режима пагинации необходимо проверить наличие скрытого поля в элементе "paste-1__replace".
 						if ( mythis.params.type_insert == 'paginator' ) {
@@ -1534,6 +1531,35 @@ provide( bemDom.declBlock( this.name,
 				}
 			}
 		},
+		
+		/**
+		 * Вставка html-разметки с заменой элемента(-ов) "paste__delete" внутри блока.
+		 *
+		 * @param {string} html
+		 *    Строка, содержащая html разметку.
+		 */
+		_insert: function( html ) {
+			
+			this._elem_div__replace = this.findChildElems( 'replace' );
+			if ( this._elem_div__replace.size() > 0 ) {
+
+				let i = 1;
+				this._elem_div__replace.forEach( function( object ) {
+					
+					if ( i == 1) {
+
+						// Первый элемент "replace" подменяем на html-разметку, пришедшую от AJAX-запроса.
+						bemDom.replace( object.domElem, html );
+						i++;
+					}
+					else {
+						
+						// Последующие элементы "replace" просто удаляем.
+						bemDom.destruct( object.domElem );
+					}
+				});
+			}
+		},
 	},
 	{
 		/**
@@ -1562,7 +1588,7 @@ provide( bemDom.declBlock( this.name,
 			
 			return {
 				
-				name : null,// Имя блока именной канал которого получит соответствующее событие.
+				name : null,// Имя блока, именной канал которого получит соответствующее событие.
 			}
 		},
 
