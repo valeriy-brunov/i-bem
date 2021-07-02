@@ -1340,12 +1340,25 @@ provide( bemDom.declBlock( this.name,
 						}
 					}
 
-					// Если задано имя блока, создаём именной канал для запуска событий.
+					// Если задано имя блока.
 					if ( this.params.name ) {
 
+						// Создаём именной канал для запуска событий.
 						channels( this.params.name ).on('click change', { mythis : this }, function( event ) {
 
 							event.data.mythis._ajax( event );
+						});
+						
+						// Создаём именной канал для вставки html-разметки из внешнего кода.
+						channels( this.params.name ).on('insert', { mythis : this }, function( event, html ) {
+
+							event.data.mythis._insert( html );
+						});
+						
+						// Создаём именной канал для установки соответствующего режима.
+						channels( this.params.name ).on('mode', { mythis : this }, function( event, mode ) {
+
+							event.data.mythis._setupElem( mode );
 						});
 					}
 				}
@@ -1533,7 +1546,7 @@ provide( bemDom.declBlock( this.name,
 		},
 		
 		/**
-		 * Вставка html-разметки с заменой элемента(-ов) "paste__delete" внутри блока.
+		 * Вставка html-разметки с заменой элемента(-ов) "paste__replace" внутри блока.
 		 *
 		 * @param {string} html
 		 *    Строка, содержащая html разметку.
